@@ -34,7 +34,7 @@
 #define D5 RB5
 #define D6 RD6
 #define D7 RD7
-
+#define contador 0
 char s1_pot [10];
 char s2_pot [10];
 char cont [10];
@@ -48,6 +48,7 @@ void main(void)
     Lcd_Init();
     int pot_s1 = 0;
     int pot_s2 = 0;
+    int Cont = 0;
     unsigned int a;
     while (1)
     {
@@ -67,7 +68,15 @@ void main(void)
        
        spiWrite(1);
        pot_s2 = spiRead();
-       //unsigned int cont = spiRead();
+       __delay_ms(1);
+       
+       PORTCbits.RC1 = 1;       //Slave Deselect
+       //--------------Contador segundo esclavo----------------------------------------------
+       PORTCbits.RC1 = 0;       //Slave Select
+       __delay_ms(5);
+       
+       spiWrite(contador);
+       Cont = spiRead();
        __delay_ms(1);
        
        PORTCbits.RC1 = 1;       //Slave Deselect
@@ -84,8 +93,11 @@ void main(void)
        Lcd_Set_Cursor(2,4);
        sprintf(s2_pot, "%d\r", pot_s2);
        Lcd_Write_String(s2_pot);
-       Lcd_Set_Cursor(1,12);
+       Lcd_Set_Cursor(1,8);
        Lcd_Write_String("Cont:");
+       Lcd_Set_Cursor(1,14);
+       sprintf(cont, "%d\r", Cont);
+       Lcd_Write_String(cont);
        __delay_ms(2000);
        
       

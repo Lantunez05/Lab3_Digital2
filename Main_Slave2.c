@@ -28,8 +28,8 @@
 #include "SPI.h"
 
 #define _XTAL_FREQ 8000000
-int cont = 0;
-
+uint8_t ver, cont;
+#define contador 0
 // Prototipos
 void setup (void);
 void __interrupt() isr(void){
@@ -42,9 +42,18 @@ void __interrupt() isr(void){
         return;
     }
    if(SSPIF == 1){
-        spiRead();
-        spiWrite(PORTB);
-        //spiWrite(cont);
+        ver = spiRead();
+        if (ver == contador)
+        {
+            spiWrite(PORTB);
+            __delay_ms(1);
+        }
+        else
+        {
+            spiWrite(cont);
+            __delay_ms(1);
+        }
+        
         SSPIF = 0;
     }
 }
